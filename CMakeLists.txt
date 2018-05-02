@@ -13,6 +13,8 @@
 cmake_minimum_required (VERSION 3.1)
 project (aws-c-event-stream)
 
+option(IN_SOURCE_BUILD "If enabled, this library will not find external depencencies and you don't need to provide installation prefix to CMAKE_PREFIX_PATH, the use case is to build this library as a part of other libraries." OFF)
+
 if(NOT MSVC)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -46,8 +48,10 @@ file(GLOB EVENT_STREAM_SRC
     ${AWS_EVENT_STREAM_SRC}
 )
 
-find_package(aws-c-common)
-find_package(aws-checksums)
+if (NOT IN_SOURCE_BUILD)
+    find_package(aws-c-common)
+    find_package(aws-checksums)
+endif()
 
 add_library(${CMAKE_PROJECT_NAME} ${EVENT_STREAM_HEADERS} ${EVENT_STREAM_SRC})
 
