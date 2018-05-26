@@ -158,7 +158,7 @@ size_t add_headers_to_buffer(struct aws_array_list *headers, uint8_t *buffer) {
  * no buffer copies happen here, the lifetime of the buffer, must outlive the usage of the headers.
  * returns error codes defined in the public interface. */
 int get_headers_from_buffer(struct aws_array_list *headers,
-                            const uint8_t *buffer, size_t headers_len) {
+                            uint8_t *buffer, size_t headers_len) {
 
     if(AWS_UNLIKELY(headers_len > MAX_HEADERS_SIZE)) {
         return aws_raise_error(AWS_ERROR_EVENT_STREAM_MESSAGE_FIELD_SIZE_EXCEEDED);
@@ -560,7 +560,7 @@ static int add_variable_len_header(struct aws_array_list *headers, struct aws_ev
         memcpy((void *) header->header_value.variable_len_val, (void *) value, value_len);
     } else {
         header->value_owned = 0;
-        header->header_value.variable_len_val = (const uint8_t *) value;
+        header->header_value.variable_len_val = (uint8_t *) value;
     }
 
     if (aws_array_list_push_back(headers, (void *) header)) {
@@ -762,7 +762,7 @@ static void reset_state(struct aws_event_stream_streaming_decoder *decoder);
 static int headers_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data,
                          size_t len, size_t *processed);
 
-static int read_header_value(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int read_header_value(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                   size_t *processed) {
 
     size_t current_pos = decoder->message_pos;

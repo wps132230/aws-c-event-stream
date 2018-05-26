@@ -16,6 +16,14 @@
 #include <aws/event-stream/event_stream.h>
 #include <aws/testing/aws_test_harness.h>
 
+#ifdef _MSC_VER 
+#pragma warning( push )
+/* turn off unused named parameter warning on msvc.*/
+#pragma warning( disable : 4100)
+/* turn off non-constant aggregate initializer warning on msvc.*/
+#pragma warning( disable : 4204)
+#endif
+
 struct test_decoder_data {
     struct aws_event_stream_message_prelude latest_prelude;
     char latest_header_name[100];
@@ -312,3 +320,7 @@ static int test_streaming_decoder_incoming_multiple_messages_fn(struct aws_alloc
 
 AWS_TEST_CASE(test_streaming_decoder_incoming_multiple_messages,
               test_streaming_decoder_incoming_multiple_messages_fn)
+
+#if _MSC_VER
+#pragma warning(pop)
+#endif /* _MSC_VER */

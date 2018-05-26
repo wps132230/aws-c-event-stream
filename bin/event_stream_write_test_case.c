@@ -19,6 +19,12 @@
 #include <stdio.h>
 #include <string.h>
 
+/* turn off "this function or variable may be unsafe" warning on msvc.*/
+#ifdef _MSC_VER 
+#pragma warning( push )
+#pragma warning( disable : 4996)
+#endif
+
 static void *mem_acquire_malloc(struct aws_allocator *alloc, size_t size) {
     return malloc(size);
 }
@@ -254,3 +260,7 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+#if _MSC_VER
+#pragma warning(pop)
+#endif /* _MSC_VER */

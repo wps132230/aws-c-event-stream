@@ -22,6 +22,11 @@
 
 #include <stdint.h>
 
+/* turn off "structure was padded due to alignment specifier" warning on msvc.*/
+#ifdef _MSC_VER 
+#pragma warning( push )
+#pragma warning( disable : 4324)
+#endif
 
 typedef enum aws_event_stream_errors {
     AWS_ERROR_EVENT_STREAM_BUFFER_LENGTH_MISMATCH = 0x1000,
@@ -66,10 +71,10 @@ typedef enum aws_event_stream_header_value_type {
 
 struct aws_event_stream_header_value_pair {
     uint8_t header_name_len;
-    const char header_name[INT8_MAX];
+    char header_name[INT8_MAX];
     aws_event_stream_header_value_type header_value_type;
     union {
-        const uint8_t *variable_len_val;
+        uint8_t *variable_len_val;
         uint8_t static_val[16];
     } header_value;
 
@@ -79,7 +84,7 @@ struct aws_event_stream_header_value_pair {
 
 struct aws_event_stream_streaming_decoder;
 typedef int(*aws_event_stream_process_state_fn)(struct aws_event_stream_streaming_decoder *decoder,
-    const uint8_t *data, size_t len, size_t *processed);
+    uint8_t *data, size_t len, size_t *processed);
 
 /**
  * Called by aws_aws_event_stream_streaming_decoder when payload data has been received.
@@ -366,5 +371,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#if _MSC_VER
+#pragma warning(pop)
+#endif /* _MSC_VER */
 
 #endif /* AWS_EVENT_STREAM_H_ */
