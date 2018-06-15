@@ -826,7 +826,7 @@ static int read_header_value(struct aws_event_stream_streaming_decoder *decoder,
     return AWS_OP_SUCCESS;
 }
 
-static int read_header_value_len(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int read_header_value_len(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                                  size_t *processed) {
     size_t current_pos = decoder->message_pos;
 
@@ -854,7 +854,7 @@ static int read_header_value_len(struct aws_event_stream_streaming_decoder *deco
 }
 
 
-static int read_header_type(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data,
+static int read_header_type(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data,
                             size_t len, size_t *processed) {
 
     uint8_t type = *data;
@@ -916,7 +916,7 @@ static int read_header_type(struct aws_event_stream_streaming_decoder *decoder, 
     return aws_raise_error(AWS_ERROR_EVENT_STREAM_MESSAGE_UNKNOWN_HEADER_TYPE);
 }
 
-static int read_header_name(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int read_header_name(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                  size_t *processed) {
     size_t current_pos = decoder->message_pos;
 
@@ -940,7 +940,7 @@ static int read_header_name(struct aws_event_stream_streaming_decoder *decoder, 
     return AWS_OP_SUCCESS;
 }
 
-static int read_header_name_len(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int read_header_name_len(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                      size_t *processed) {
 
     decoder->current_header.header_name_len = *data;
@@ -953,7 +953,7 @@ static int read_header_name_len(struct aws_event_stream_streaming_decoder *decod
     return AWS_OP_SUCCESS;
 }
 
-static int start_header(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int start_header(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                         size_t *processed) {
     decoder->state = read_header_name_len;
     decoder->current_header_name_offset = decoder->message_pos;
@@ -967,7 +967,7 @@ static int payload_state(struct aws_event_stream_streaming_decoder *decoder, con
 /*Handles the initial state for header parsing.
   will oscillate between multiple other states as well.
   after all headers have been handled, payload will be set as the next state. */
-static int headers_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data,
+static int headers_state(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data,
                          size_t len, size_t *processed) {
     size_t current_pos = decoder->message_pos;
 
@@ -986,7 +986,7 @@ static int headers_state(struct aws_event_stream_streaming_decoder *decoder, con
 
 /* handles reading the trailer. Once it has been read, it will be compared to the running checksum. If successful,
  * the state will be reset. */
-static int read_trailer_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int read_trailer_state(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                    size_t *processed) {
 
     size_t remaining_amount = decoder->prelude.total_len - decoder->message_pos;
@@ -1018,7 +1018,7 @@ static int read_trailer_state(struct aws_event_stream_streaming_decoder *decoder
 
 /* handles the reading of the payload up to the final checksum. Sets read_trailer_state as the new state once
  * the payload has been processed. */
-static int payload_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data,
+static int payload_state(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data,
                          size_t len, size_t *processed) {
 
     if (decoder->message_pos < decoder->prelude.total_len - AWS_EVENT_STREAM_TRAILER_LENGTH) {
@@ -1041,7 +1041,7 @@ static int payload_state(struct aws_event_stream_streaming_decoder *decoder, con
 }
 
 /* Parses the payload and verifies checksums. Sets the next state if successful. */
-static int verify_prelude_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int verify_prelude_state(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                      size_t *processed) {
     decoder->prelude.headers_len = aws_read_u32(decoder->working_buffer + HEADER_LEN_OFFSET);
     decoder->prelude.prelude_crc = aws_read_u32(decoder->working_buffer + PRELUDE_CRC_OFFSET);
@@ -1085,7 +1085,7 @@ static int verify_prelude_state(struct aws_event_stream_streaming_decoder *decod
 
 /* initial state handles up to the reading of the prelude */
 static int start_state(struct aws_event_stream_streaming_decoder *decoder,
-                       const uint8_t *data, size_t len, size_t *processed) {
+                       uint8_t *data, size_t len, size_t *processed) {
 
     size_t previous_position = decoder->message_pos;
     if (decoder->message_pos < AWS_EVENT_STREAM_PRELUDE_LENGTH) {
