@@ -759,7 +759,7 @@ static void reset_header_state(struct aws_event_stream_streaming_decoder *decode
 
 static void reset_state(struct aws_event_stream_streaming_decoder *decoder);
 
-static int headers_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data,
+static int headers_state(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data,
                          size_t len, size_t *processed);
 
 static int read_header_value(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
@@ -961,7 +961,7 @@ static int start_header(struct aws_event_stream_streaming_decoder *decoder, uint
     return AWS_OP_SUCCESS;
 }
 
-static int payload_state(struct aws_event_stream_streaming_decoder *decoder, const uint8_t *data, size_t len,
+static int payload_state(struct aws_event_stream_streaming_decoder *decoder, uint8_t *data, size_t len,
                          size_t *processed);
 
 /*Handles the initial state for header parsing.
