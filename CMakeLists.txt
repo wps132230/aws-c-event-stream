@@ -88,6 +88,7 @@ install (
          TARGETS ${PROJECT_NAME} EXPORT  ${PROJECT_NAME}-config
          ARCHIVE DESTINATION lib
          LIBRARY DESTINATION lib
+         RUNTIME DESTINATION lib
          COMPONENT library     
 )
 
